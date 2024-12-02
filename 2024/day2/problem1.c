@@ -3,10 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-int compare(const void *a, const void *b) {
-  return (*(int *)a - *(int *)b);
-}
-
 int main() {
   FILE *file = fopen("input1.txt", "r");
 
@@ -19,7 +15,6 @@ int main() {
   char line[100];
 
   while (fgets(line, sizeof(line), file)) {
-    // printf("line: %s", line);
     char *token = strtok(line, " ");
 
     int prev = strtol(token, NULL, 10);
@@ -50,16 +45,12 @@ int main() {
         valid = false;
       }
 
-      // printf("%i,", curr);
       prev = curr;
       token = strtok(NULL, " ");
     }
 
     if (valid) {
       valid_rows += 1;
-      // printf(" // valid\n");
-    } else {
-      // printf(" // not valid\n");
     }
  }
 

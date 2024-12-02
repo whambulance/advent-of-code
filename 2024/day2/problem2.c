@@ -3,10 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-int compare(const void *a, const void *b) {
-  return (*(int *)a - *(int *)b);
-}
-
 int main() {
   FILE *file = fopen("example-input1.txt", "r");
 
