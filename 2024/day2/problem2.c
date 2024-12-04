@@ -3,34 +3,57 @@
 #include <stdbool.h>
 #include <string.h>
 
-bool is_valid(const int *numbers_array, const int length) {
+bool is_valid(const int *numbers_array, const int length, const int skip) {
   if (length < 2) {
     return true;
   }
 
   bool valid = true;
   bool increasing = numbers_array[0] < numbers_array[1];
+  if (skip == 0) {
+    increasing = numbers_array[1] < numbers_array[2]; 
+  } if (skip == 1) {
+    increasing = numbers_array[0] < numbers_array[2];
+  }
 
-  for (int i = 1; i <= length; i++) {
-    int prev = numbers_array[i - 1];
+  int length_mod = 1;
+  if (skip > -1) {
+    length_mod += 1;
+  }
+
+  for (int i = 0; i < length - 1; i++) {
+    if (i == skip) {
+      continue;
+    }
+
+    if (skip > length - 2 && i > length - 3) {
+      continue;
+    }
+
+    int next_amount = 1;
+    if (i + 1 == skip) {
+      next_amount += 1;
+    }
+
     int curr = numbers_array[i];
-
-    if (abs(curr - prev) > 3) {
+    int next = numbers_array[i + next_amount];
+    
+    if (abs(next - curr) > 3) {
       valid = false;
     }
 
-    // if (increasing != curr > prev) {
-    //   valid = false;
-    // } else if (curr == prev) {
-    //   valid = false;
-    // }
+    if (increasing != next > curr) {
+      valid = false;
+    } else if (curr == next) {
+      valid = false;
+    }
   }
 
   return valid;
 }
 
 int main() {
-  FILE *file = fopen("example-input1.txt", "r");
+  FILE *file = fopen("input1.txt", "r");
 
   if (file == NULL) {
     perror("Unable to open file");
@@ -46,6 +69,7 @@ int main() {
   numbers = malloc(capacity * sizeof(int));
 
   while (fgets(line, sizeof(line), file)) {
+    counter = 0;
     line[strcspn(line, "\n")] = 0;
     printf("line: %s", line);
     char *token = strtok(line, " ");
@@ -71,9 +95,32 @@ int main() {
       token = strtok(NULL, " ");
     }
 
-    bool valid = is_valid(numbers, counter);
+    printf(" // checking");
+    bool valid = is_valid(numbers, counter, -1);
 
-    printf(" // valid: %d\n", valid);
+    if (!valid) {
+      bool skip_valid = false;
+
+      for (int i = 0; i <= counter - 1; i++) {
+        valid = is_valid(numbers, counter, i);
+        
+        if (valid) {
+          skip_valid = true;
+        }
+      }
+
+      if (skip_valid) {
+        valid_rows += 1;
+      }
+
+      printf(" // skipped, valid: %d\n", skip_valid);
+    } else {
+      if (valid) {
+        valid_rows += 1;
+      }
+
+      printf(" // valid: %d\n", valid);
+    }
  }
 
   printf("Total: %i\n", valid_rows);
