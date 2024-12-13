@@ -31,8 +31,8 @@ int main() {
 
   char line[100];
   while (fgets(line, sizeof(line), file)) {
-    char *left_num = strtok(line, " ");
-    char *right_num = strtok(NULL, " ");
+    char *left_num = strtok(line, "|");
+    char *right_num = strtok(NULL, "|");
 
     if (left_size >= left_capacity) {
       left_capacity *= 2;
